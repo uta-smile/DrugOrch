@@ -1,0 +1,226 @@
+/* The setup screen: four numbered steps and a launch bar.
+ *
+ * The page used to explain itself in paragraphs — why the policy choice is yours, what each
+ * provider trades off, a hint under every field. A wall of prose gets skipped, and the
+ * warnings that mattered were skipped with it. So state is carried by position and colour
+ * instead: a numbered rail you can scan, chips that are green or not, and one short line
+ * where a line is genuinely needed.
+ */
+
+.setup { max-width: 760px; margin: 0 auto; }
+
+/* --- numbered steps -------------------------------------------------------- */
+.step { display: grid; grid-template-columns: 34px 1fr; gap: 14px; padding: 0 0 22px; }
+.step .rail { display: flex; flex-direction: column; align-items: center; }
+.step .num {
+  width: 26px; height: 26px; border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 650;
+  border: 1.5px solid var(--border-strong); color: var(--fg-muted);
+  background: var(--bg-elev);
+}
+.step.done .num { border-color: var(--ok-line); color: var(--ok); background: var(--ok-bg); }
+
+/* The connector makes four steps read as one path rather than four loose cards. */
+.step .rail::after {
+  content: ""; flex: 1; width: 1.5px; background: var(--border); margin-top: 6px;
+}
+.step:last-of-type .rail::after { display: none; }
+
+.step h2 {
+  font-size: 13px; font-weight: 650; margin: 4px 0 9px;
+  display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap;
+}
+.step h2 small { font-size: 11.5px; font-weight: 400; color: var(--fg-muted); }
+.step .content { min-width: 0; }
+.step textarea { min-height: 54px; }
+
+/* One short line, coloured by severity. This replaced the paragraphs. */
+.note { font-size: 11.5px; line-height: 1.5; color: var(--fg-muted); margin: 8px 0 0; }
+.note.ok { color: var(--ok); }
+.note.warn { color: var(--warn); }
+.note.err { color: var(--err); }
+
+/* --- policy chips ---------------------------------------------------------- */
+.pol-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.pol {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 11px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg-elev); color: inherit; font: inherit; font-size: 12.5px;
+  cursor: pointer; transition: border-color .12s, background .12s;
+}
+.pol:hover:not(.off) { border-color: var(--border-strong); }
+.pol.sel { border-color: var(--accent-line); background: var(--accent-bg); font-weight: 600; }
+.pol.off { opacity: .45; cursor: not-allowed; }
+.pol .q {
+  width: 15px; height: 15px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 10px; background: var(--bg-sunken); color: var(--fg-muted);
+}
+.pol .q:hover { background: var(--accent); color: var(--accent-fg); }
+
+.dot.pol-fixed { background: var(--pol-fixed); }
+.dot.pol-random, .dot.pol-roundrobin { background: var(--pol-random); }
+.dot.pol-scripted { background: var(--pol-scripted); }
+.dot.pol-oracle { background: var(--pol-oracle); }
+.dot.pol-llm { background: var(--pol-llm); }
+.dot.err { background: var(--err); }
+
+/* --- provider ------------------------------------------------------------- */
+.prov {
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-elev); padding: 11px;
+}
+.seg {
+  display: inline-flex; border: 1px solid var(--border);
+  border-radius: var(--r-sm); overflow: hidden;
+}
+.seg-opt {
+  padding: 6px 13px; border: 0; border-right: 1px solid var(--border);
+  background: var(--bg); color: var(--fg-muted); font: inherit; font-size: 12.5px;
+  cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+}
+.seg-opt:last-child { border-right: 0; }
+.seg-opt small { font-size: 10px; opacity: .75; }
+.seg-opt.sel { background: var(--accent-bg); color: var(--fg); font-weight: 600; }
+
+.prov-auth { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+.prov-auth.block { display: block; }
+
+.models { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; margin-top: 11px; }
+.models label {
+  display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--fg-muted);
+}
+.models label span {
+  text-transform: uppercase; letter-spacing: .04em; font-size: 10px;
+}
+.models select {
+  padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--r-sm);
+  background: var(--bg); color: var(--fg); font: inherit; font-size: 12.5px; min-width: 170px;
+}
+
+/* --- chips: the unit of status everywhere ---------------------------------- */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 999px; font-size: 11px; white-space: nowrap;
+  border: 1px solid var(--border); background: var(--bg-sunken); color: var(--fg-muted);
+}
+.chip.ok  { border-color: var(--ok-line);  background: var(--ok-bg);  color: var(--ok); }
+.chip.err { border-color: var(--err-line); background: var(--err-bg); color: var(--err); }
+.chip.off { opacity: .7; }
+
+/* --- readiness: one row, not a card ---------------------------------------- */
+.rdy {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin-top: 9px; padding: 9px 11px; border-radius: var(--r-md);
+  border: 1px solid var(--border); background: var(--bg-elev); font-size: 12.5px;
+}
+.rdy.ok { border-color: var(--ok-line); background: var(--ok-bg); }
+.rdy.warn { border-color: var(--warn-line); background: var(--warn-bg); }
+.rdy.error { border-color: var(--err-line); background: var(--err-bg); }
+.rdy .who { display: flex; gap: 7px; align-items: baseline; margin-right: 2px; }
+.rdy .alt { font-size: 11px; color: var(--fg-faint); }
+.rdy .why { flex-basis: 100%; font-size: 11.5px; color: var(--fg-muted); line-height: 1.5; }
+.rdy.checking { color: var(--fg-muted); }
+
+/* --- launch bar ------------------------------------------------------------ */
+.launch {
+  display: flex; align-items: flex-end; gap: 16px; margin-left: 48px;
+  padding-top: 16px; border-top: 1px solid var(--border);
+}
+.nums { display: flex; gap: 14px; }
+.nums label {
+  display: flex; flex-direction: column; gap: 3px; font-size: 10px;
+  text-transform: uppercase; letter-spacing: .04em; color: var(--fg-muted);
+}
+.nums input { width: 92px; padding: 6px 8px; font-size: 13px; }
+.nums small { font-size: 10px; text-transform: none; letter-spacing: 0; }
+
+.btn.lg { padding: 9px 22px; font-size: 14px; }
+.btn.sm { padding: 3px 9px; font-size: 11.5px; }
+
+@media (max-width: 620px) {
+  .step { grid-template-columns: 26px 1fr; gap: 10px; }
+  .launch { margin-left: 0; flex-wrap: wrap; }
+}
+
+/* --- tool picker ------------------------------------------------------------
+ *
+ * A list rather than a row of chips like the policies: the policies are one exclusive
+ * choice and fit on a line, while these are independent toggles that each carry a summary
+ * and a parameter table. Expanding one is how a reader finds out what the model can ask
+ * that tool for, which is the question the manifest answers and nothing else did.
+ */
+.tools { display: flex; flex-direction: column; gap: 6px; }
+.tool {
+  border: 1px solid var(--border); border-radius: var(--r-md);
+  background: var(--bg-elev); transition: border-color .12s, opacity .12s;
+  opacity: .55;
+}
+.tool.on { opacity: 1; border-color: var(--border-strong); }
+.tool-head {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 11px; cursor: pointer; font-size: 13px;
+}
+.tool-head input { width: auto; margin: 0; flex: none; }
+.tool-head .n { font-weight: 600; }
+.tool-head .q {
+  width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 11px; background: var(--bg-sunken); color: var(--fg-muted);
+  border: 0; cursor: pointer; flex: none;
+}
+.tool-head .q:hover { background: var(--accent); color: var(--accent-fg); }
+.tool-body {
+  padding: 2px 11px 11px 37px; border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 7px;
+}
+.tool-body p { margin: 0; line-height: 1.55; }
+
+/* --- prompt panel ------------------------------------------------------------
+ *
+ * The prompt is reading material, so it gets a measure and leading rather than being
+ * squeezed into the form's rhythm. The height cap is deliberate: the manifest runs to
+ * several screens and an uncapped block would push the launch button out of reach, which
+ * is how a panel meant to be read becomes a panel that is scrolled past.
+ */
+.prompt { display: flex; flex-direction: column; gap: 9px; }
+.ptabs { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.ptab {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 4px 10px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg-elev); color: inherit; font: inherit; font-size: 12px;
+  cursor: pointer;
+}
+.ptab:hover { border-color: var(--border-strong); }
+.ptab.sel { border-color: var(--accent-line); background: var(--accent-bg); font-weight: 600; }
+.prompt-body { max-height: 320px; overflow: auto; font-size: 12px; }
+.pedit {
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.pedit textarea { width: 100%; }
+.pedit label { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.pedit label input { width: auto; margin: 0; }
+
+/* --- tool authoring ----------------------------------------------------------
+ *
+ * Behind a disclosure: writing a subsystem is a thing a few people do once, and the step it
+ * sits in is one everyone passes through on the way to starting a run.
+ */
+.authoring-wrap { margin-top: 10px; }
+.authoring-wrap > summary {
+  cursor: pointer; font-size: 12px; color: var(--fg-muted); padding: 4px 0;
+}
+.authoring-wrap > summary:hover { color: var(--fg); }
+.authoring { padding-top: 8px; }
+.authcode {
+  max-height: 340px; overflow: auto; margin: 8px 0 0; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  background: var(--bg-sunken); font-family: var(--mono); font-size: 11px;
+  line-height: 1.55; white-space: pre; tab-size: 4;
+}
+.authh {
+  margin: 14px 0 5px; font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--fg-faint); font-weight: 600;
+}
+.authfail { margin: 7px 0 0; padding-left: 18px; }
+.authfail li { margin-bottom: 6px; }
+.tiny { font-size: 10.5px; }

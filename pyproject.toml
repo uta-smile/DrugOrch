@@ -1,0 +1,84 @@
+[project]
+name = "drugorch"
+version = "0.1.0"
+description = "LLM-orchestrated multi-subsystem drug discovery with a visible routing trace"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "httpx>=0.28",
+    "anyio>=4.6",
+    "tenacity>=9.0",
+    "typer>=0.15",
+    "python-dotenv>=1.0",
+    "jsonschema>=4.23",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scipy>=1.14",
+    "rdkit>=2024.9.1",
+    "gemmi>=0.6.6",
+    "meeko>=0.8",
+    "anthropic>=0.69",
+    "pyjwt[crypto]>=2.10",
+    # The public-benchmark pool ships as partitioned parquet; this reads it.
+    "pyarrow>=18.0",
+]
+
+[project.optional-dependencies]
+obabel = ["openbabel-wheel>=3.1.1.21"]
+
+[project.scripts]
+drugorch = "drugorch.cli:app"
+
+# The built-in subsystems load through the same discovery path as any third-party plugin.
+# Keeping no privileged tier is the only reliable way to know the plugin mechanism works:
+# if it breaks, docking stops working too.
+[project.entry-points."drugorch.subsystems"]
+properties = "drugorch.subsystems.registry:build_properties"
+retrieval = "drugorch.subsystems.registry:build_retrieval"
+generation = "drugorch.subsystems.registry:build_generation"
+docking = "drugorch.subsystems.registry:build_docking"
+similarity = "drugorch.subsystems.registry:build_similarity"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "respx>=0.22",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/drugorch"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# Vendored third-party checkouts under `external/`, and the per-model virtualenvs. Their
+# style is their authors' business, and a `ruff check .` reporting findings in code nobody
+# here will edit trains people to ignore the output. Code *this* project writes under
+# `external/` -- the runner and the torch-scatter shim -- is deliberately not excluded.
+#
+# `extend-exclude`, not `exclude`: the latter REPLACES ruff's built-in list, which silently
+# puts `.venv`, `__pycache__`, `build` and the rest back in scope. The symptom is dramatic --
+# `ruff check .` went from clean to 358,000 findings, nearly all of them inside a virtualenv.
+extend-exclude = ["external/DiffSBDD", "third_party", ".venv-*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+# B008: typer.Option() in a default is the library's documented idiom, not a mutable default.
+# SIM905: whitespace-delimited blocks of PDB component codes read far better as one
+# string than as a 60-element list literal.
+ignore = ["E501", "B008", "SIM905"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

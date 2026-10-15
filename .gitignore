@@ -1,0 +1,63 @@
+# --- secrets ------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+# A live token for the user's paid ChatGPT subscription, plus the machine id it
+# is bound to. Both sit under data/cache/, ignored below; named again in case
+# that line ever moves.
+data/cache/chatgpt_auth.json
+data/cache/host_id
+.claude/settings.local.json
+
+# --- virtualenvs --------------------------------------------------------------
+.venv/
+.venv-*/
+
+# --- python caches and build output -------------------------------------------
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# --- generated data -----------------------------------------------------------
+# Rebuilt by running the tool; nothing here is a source.
+.cache/
+data/cache/
+data/runs/
+data/drugorch.sqlite*
+*.log
+
+# Benchmark output. The headline results (grid.*, external.json) are kept so the
+# web interface has something to show on a fresh clone; the per-instance records
+# and superseded snapshots behind them are not.
+data/bench/external/
+data/bench/external_v*.json
+
+# Knowledge graph built from this repo by the graphify skill.
+graphify-out/
+
+# --- downloaded assets --------------------------------------------------------
+# Fetched, not authored: see external/README.md and the instructions printed by
+# `drugorch bench-external` for how to get each one.
+external/DiffSBDD/
+third_party/MolDesignBench/
+data/external/*.jsonl
+*.ckpt
+*.pt
+*.pth
+tools/*.exe
+web/vendor/*
+!web/vendor/.gitkeep
+
+# --- editor and OS --------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

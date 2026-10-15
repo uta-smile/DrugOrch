@@ -1,0 +1,23 @@
+# A stand-in for torch-scatter, not a fork of it.
+#
+# The real package ships CUDA kernels that must be compiled against the exact torch build in
+# use, and no prebuilt wheel exists for torch 2.11 + cu128 on Windows/CPython 3.12. DiffSBDD
+# needs two of its functions, both at dim=0, which torch does natively -- so this provides
+# those two and nothing else. See the module docstring.
+#
+# Deliberately NOT named "torch-scatter": it must be obvious in `uv pip list` that this is a
+# substitute, so that a later environment which genuinely has the real library does not
+# silently keep using this instead.
+[project]
+name = "torch-scatter-shim"
+version = "0.0.0"
+description = "Pure-PyTorch scatter_add/scatter_mean standing in for torch-scatter at dim=0"
+requires-python = ">=3.10"
+dependencies = ["torch"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["torch_scatter"]

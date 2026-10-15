@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DrugOrch</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>&#9879;</text></svg>" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.min.css" />
+<link rel="stylesheet" href="/static/css/tokens.css" />
+<link rel="stylesheet" href="/static/css/app.css" />
+<link rel="stylesheet" href="/static/css/setup.css" />
+<link rel="stylesheet" href="/static/css/wiki.css" />
+<link rel="stylesheet" href="/static/css/trace.css" />
+<script>
+  // Set the theme before first paint, or the page flashes light then goes dark.
+  try {
+    var t = localStorage.getItem('drugorch-theme');
+    if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) { /* private mode: the default in the markup stands */ }
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "preact": "https://cdn.jsdelivr.net/npm/preact@10.29.8/dist/preact.module.js",
+    "preact/hooks": "https://cdn.jsdelivr.net/npm/preact@10.29.8/hooks/dist/hooks.module.js",
+    "htm": "https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.module.js",
+    "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.32/dist/uPlot.esm.js",
+    "3dmol": "https://cdn.jsdelivr.net/npm/3dmol@2.5.5/build/3Dmol.es6-min.js",
+    "@/": "/static/js/"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="app">
+    <div class="boot">Loading DrugOrch…</div>
+  </div>
+  <script type="module" src="/static/js/main.js"></script>
+  <noscript>
+    <p style="padding:2rem">DrugOrch needs JavaScript to show a live routing trace.</p>
+  </noscript>
+</body>
+</html>

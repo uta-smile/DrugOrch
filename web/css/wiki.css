@@ -1,0 +1,448 @@
+/* The goals article: a reference page, styled as one.
+ *
+ * The rest of this application is a control surface -- dense, status carried by colour and
+ * position. This page is the one thing in it meant to be *read*, at length, more than once,
+ * and linked to. So it borrows the conventions people already know from reference works: a
+ * contents rail, numbered sections, an infobox beside each entry, hatnotes above the body, a
+ * measured column rather than the full window width, and serif headings to say "article"
+ * before a word is read.
+ *
+ * It still uses the app's theme tokens throughout, so light and dark follow the global
+ * toggle with no special handling.
+ */
+
+.wiki {
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+/* --- contents rail ----------------------------------------------------------- */
+
+.wiki-toc {
+  position: sticky;
+  top: 64px;
+  max-height: calc(100vh - 92px);
+  overflow-y: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-elev);
+  font-size: 12px;
+}
+.wiki-toc h2 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  font-weight: 600;
+}
+.wiki-toc ol { list-style: none; margin: 0; padding: 0; }
+.wiki-toc ol ol { margin: 3px 0 7px 11px; }
+.wiki-toc li { margin: 0 0 3px; }
+.wiki-toc a {
+  display: flex;
+  gap: 7px;
+  padding: 2px 5px;
+  border-radius: var(--r-sm);
+  color: var(--fg-muted);
+  text-decoration: none;
+  line-height: 1.45;
+}
+.wiki-toc a:hover { background: var(--bg-sunken); color: var(--fg); }
+
+/* The reading indicator: a left bar rather than a fill, so it reads as a position marker
+ * and not as a selected control -- nothing here has been chosen. */
+.wiki-toc a.cur {
+  color: var(--fg);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--accent);
+  background: var(--bg-sunken);
+}
+.wiki-toc .tn { flex: 0 0 auto; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+.wiki-toc a.cur .tn { color: var(--accent); }
+
+/* --- article ----------------------------------------------------------------- */
+
+.wiki-body {
+  min-width: 0;
+  font-size: 13.5px;
+  line-height: 1.75;
+  /* Deep enough that the final section can still be scrolled up to the reading line. With a
+   * short tail the page bottoms out first, the last heading never crosses it, and the
+   * contents rail stays stuck on the second-to-last entry -- which reads as a broken
+   * indicator rather than as the end of the document. */
+  padding-bottom: 42vh;
+}
+.wiki-body p { margin: 0 0 13px; max-width: 74ch; }
+.wiki-body a { color: var(--accent); }
+
+.wiki-title {
+  margin: 0 0 2px;
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+}
+.wiki-sub {
+  margin: 0 0 14px !important;
+  color: var(--fg-muted);
+  font-size: 13.5px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Headings. The serif face and the hairline under h2 are the whole "this is an article"
+ * signal; everything else stays in the app's own type. */
+.wh {
+  font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+  font-weight: 400;
+  scroll-margin-top: 70px;
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+h2.wh {
+  margin: 30px 0 11px;
+  font-size: 22px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+h3.wh { margin: 26px 0 9px; font-size: 18px; }
+.wh-n { color: var(--fg-faint); font-variant-numeric: tabular-nums; font-size: .82em; }
+.wh-t { flex: 1; min-width: 0; }
+.wh-link {
+  opacity: 0;
+  text-decoration: none;
+  color: var(--fg-faint) !important;
+  font-size: 13px;
+  transition: opacity .12s;
+}
+.wh:hover .wh-link, .wh-link:focus-visible { opacity: 1; }
+
+/* Sub-headings inside an entry: sans, small, tight. They label parts of an argument rather
+ * than divide the document, and are deliberately absent from the contents. */
+.wsub {
+  margin: 17px 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+
+/* --- notes ------------------------------------------------------------------- */
+
+/* Hatnote: the italic indented line above an article body. */
+.hatnote {
+  margin: 0 0 18px !important;
+  padding: 7px 0 7px 14px;
+  border-left: 3px solid var(--border-strong);
+  font-style: italic;
+  color: var(--fg-muted);
+  font-size: 12.5px;
+  max-width: 74ch;
+}
+
+/* Message box, for the limitation on each entry. A box rather than a paragraph because the
+ * whole point is that it must not read as optional. */
+.ambox {
+  margin: 15px 0 !important;
+  padding: 9px 12px;
+  border: 1px solid var(--warn-line);
+  border-left-width: 4px;
+  border-radius: var(--r-sm);
+  background: var(--warn-bg);
+  font-size: 12.5px;
+  max-width: 74ch;
+}
+.ambox b { color: var(--warn); }
+
+.refnote {
+  margin-top: 16px !important;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+  font-size: 11.5px;
+  color: var(--fg-muted);
+  line-height: 1.6;
+}
+
+.question {
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--fg);
+  margin-bottom: 14px !important;
+}
+
+/* --- infobox ----------------------------------------------------------------- */
+
+.infobox {
+  float: right;
+  width: 232px;
+  margin: 2px 0 14px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--bg-sunken);
+  font-size: 11.5px;
+  overflow: hidden;
+}
+.ib-head {
+  padding: 7px 11px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 12px;
+}
+.infobox dl { margin: 0; padding: 9px 11px; }
+.infobox dt {
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-top: 7px;
+}
+.infobox dt:first-child { margin-top: 0; }
+.infobox dd { margin: 0; line-height: 1.5; }
+.infobox .chip { margin: 2px 3px 0 0; }
+
+.sup {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+}
+.sup.ok   { border-color: var(--ok-line);   background: var(--ok-bg);   color: var(--ok); }
+.sup.part { border-color: var(--warn-line); background: var(--warn-bg); color: var(--warn); }
+
+/* An entry owns its floated infobox. Without this a short entry lets the box overhang the
+ * next heading, and the section numbering appears to belong to the wrong entry. */
+.goalsec { display: flow-root; margin-bottom: 8px; }
+
+/* --- lists, tables, judgement ------------------------------------------------ */
+
+.wsteps { margin: 0 0 13px; padding-left: 20px; max-width: 74ch; }
+.wsteps li { margin-bottom: 5px; }
+
+/* What to read, and what would fool you. Equal weight: the second is the one that makes it
+ * research rather than operation. */
+.judge { margin: 0 0 13px; max-width: 74ch; }
+.judge dt {
+  font-size: 10.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 9px;
+}
+.judge dt:first-child { margin-top: 0; }
+.judge dt.good { color: var(--ok); }
+.judge dt.bad  { color: var(--warn); }
+.judge dd { margin: 2px 0 0; }
+
+.wikitable {
+  border-collapse: collapse;
+  margin: 0 0 13px;
+  font-size: 12px;
+  border: 1px solid var(--border-strong);
+}
+.wikitable th, .wikitable td { padding: 5px 11px; border: 1px solid var(--border); }
+.wikitable th {
+  background: var(--bg-sunken);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .03em;
+  text-align: left;
+}
+.wikitable th.num, .wikitable td.num { text-align: right; }
+.wikitable tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--bg-sunken) 45%, transparent);
+}
+
+.wrules { margin: 0; max-width: 74ch; }
+.wrules > div { margin-bottom: 13px; }
+.wrules dt { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+.wrules dd { margin: 0; color: var(--fg-muted); }
+
+.ex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 9px 12px;
+  margin-bottom: 8px;
+  max-width: 74ch;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  background: var(--bg-sunken);
+}
+.ex-text { line-height: 1.6; }
+.ex-note { line-height: 1.5; }
+
+/* --- narrow ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .wiki { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .wiki-toc { position: static; max-height: none; }
+  .infobox { float: none; width: auto; margin: 0 0 14px; }
+}
+
+/* --- the selection figure ----------------------------------------------------
+ *
+ * Inline SVG, so the theme is inherited rather than rebuilt: `var(--ok)` resolves in an
+ * `svg` element exactly as it does in a `div`, which is the whole reason this is not a
+ * uPlot chart like the leaderboard. Nothing here needs a `themechange` listener.
+ */
+.selfig { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 18px; max-width: 74ch; }
+.selfig-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nstep {
+  min-width: 34px; padding: 3px 9px; font: inherit; font-size: 11.5px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg-elev); color: var(--fg-muted); cursor: pointer;
+}
+.nstep:hover { border-color: var(--border-strong); color: var(--fg); }
+.nstep.sel {
+  border-color: var(--accent); background: var(--accent); color: var(--accent-fg);
+  font-weight: 600;
+}
+
+.selplot { width: 100%; height: auto; display: block; }
+.selplot .grid { stroke: var(--border); stroke-width: 1; }
+.selplot .ylab, .selplot .xlab { fill: var(--fg-faint); font-size: 10px; }
+.selplot .ylab { text-anchor: end; }
+.selplot .axis { fill: var(--fg-muted); font-size: 10.5px; }
+.selplot .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.selplot .dot { stroke: var(--bg-elev); stroke-width: 1.5; }
+
+/* The reported number is drawn as a warning, because that is what it is: the series most
+ * likely to be quoted and least likely to be true. */
+.selplot .line.reported, .selplot .dot.reported { stroke: var(--warn); }
+.selplot .dot.reported { fill: var(--warn); }
+.selplot .line.truth, .selplot .dot.truth { stroke: var(--ok); }
+.selplot .dot.truth { fill: var(--ok); }
+.selplot .line.ceiling { stroke: var(--fg-faint); stroke-dasharray: 4 4; stroke-width: 1.5; }
+.selplot .dot.ceiling { stroke: var(--fg-faint); fill: var(--fg-faint); r: 2; }
+.selplot .band { fill: var(--warn); opacity: .11; stroke: none; }
+
+.selfig-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 11.5px; }
+.lg { display: inline-flex; align-items: baseline; gap: 6px; }
+/* The series name is wrapped in its own element purely so the flex `gap` above separates it
+ * from the note that follows. A bare text node becomes an anonymous flex item, which engines
+ * treat inconsistently for gap purposes, and the legend rendered as "best score reportedwhat
+ * goes in the slide". It needs no other styling. */
+.lg-name { white-space: nowrap; }
+.lg em { font-style: normal; }
+.swatch { width: 14px; height: 3px; border-radius: 2px; background: var(--fg-faint); }
+.swatch.reported { background: var(--warn); }
+.swatch.truth { background: var(--ok); }
+.swatch.ceiling {
+  background: none;
+  border-top: 2px dashed var(--fg-faint); height: 0;
+  align-self: center;
+}
+
+.selfig-read {
+  margin: 2px 0 0; font-size: 12.5px; line-height: 1.7;
+  padding: 9px 11px; border-left: 2px solid var(--warn); background: var(--warn-bg);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+.selfig-detail summary {
+  cursor: pointer; font-size: 11.5px; color: var(--fg-muted); padding: 3px 0;
+}
+.selfig-detail summary:hover { color: var(--fg); }
+.selfig-detail .cd-table { margin: 8px 0; }
+.selfig-detail p { margin: 0; line-height: 1.6; }
+
+/* --- metric terms and their popovers -----------------------------------------
+ *
+ * The term is a button, so it is reachable by keyboard and announces itself; it is styled
+ * as a dotted underline rather than as a control, because a table heading that looks like a
+ * button invites clicks that sort.
+ */
+.mterm-wrap { position: relative; }
+.mterm {
+  font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: help;
+  border-bottom: 1px dotted var(--fg-faint);
+}
+.mterm:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.mterm[aria-expanded='true'] { color: var(--accent); border-bottom-style: solid; }
+
+/* Fixed, not absolute: the anchor is often inside a scrolling table, and an absolutely
+ * positioned popover would be clipped by it. Position is measured from the button. */
+.mpop {
+  position: fixed; z-index: 70; width: min(340px, calc(100vw - 16px));
+  border: 1px solid var(--border-strong); border-radius: var(--r-md);
+  background: var(--bg-elev); box-shadow: var(--shadow);
+  font-size: 12px; line-height: 1.6; text-align: left; font-weight: 400;
+  /* Every one of these resets undoes something inherited from the anchor. A metric term
+   * usually sits in a `th`, which in this project is nowrap, right-aligned, uppercase,
+   * letter-spaced and bold; without the reset the popover rendered as one unwrapped line
+   * 919px wide inside a 339px box, so most of each definition was simply not visible. */
+  text-transform: none; letter-spacing: 0; white-space: normal; overflow-wrap: break-word;
+}
+.mpop-head {
+  display: flex; align-items: baseline; gap: 8px; padding: 8px 10px;
+  border-bottom: 1px solid var(--border); background: var(--bg-sunken);
+}
+.mpop-head .spacer { flex: 1; }
+.mdir { color: var(--fg-muted); font-size: 10.5px; }
+.mpop-x {
+  border: 0; background: none; color: var(--fg-faint); cursor: pointer;
+  font-size: 15px; line-height: 1; padding: 0 2px;
+}
+.mpop-x:hover { color: var(--fg); }
+.mpop-body { padding: 9px 10px; max-height: 50vh; overflow-y: auto; }
+.mshort { margin: 0 0 7px; }
+.mrow { margin: 0 0 6px; }
+.mrow dt {
+  font-size: 10px; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--fg-faint); font-weight: 600;
+}
+.mrow dd { margin: 1px 0 0; }
+.mcaution {
+  margin: 8px 0 0; padding: 7px 9px; border-radius: var(--r-sm);
+  background: var(--warn-bg); border-left: 3px solid var(--warn);
+}
+.mcaution b { color: var(--warn); }
+.msee { margin-top: 8px; }
+.mpop-more {
+  display: block; padding: 7px 10px; border-top: 1px solid var(--border);
+  font-size: 11.5px; color: var(--accent); text-decoration: none;
+}
+.mpop-more:hover { background: var(--bg-sunken); }
+
+/* --- glossary section --------------------------------------------------------- */
+
+.gloss { margin: 0 0 6px; }
+.gentry { padding: 9px 0; border-top: 1px solid var(--border); scroll-margin-top: 70px; }
+.gentry:first-child { border-top: 0; }
+.gentry > dt {
+  display: flex; align-items: baseline; gap: 9px;
+  font-weight: 600; font-size: 13px; margin-bottom: 3px;
+}
+.gentry > dd { margin: 0; }
+.gentry p { margin: 0 0 4px; max-width: 72ch; }
+.gentry p:last-child { margin-bottom: 0; }
+.gmeta { color: var(--fg-muted); font-size: 12.5px; }
+.gmeta b { color: var(--fg); font-weight: 600; }
+.gcaution { color: var(--warn); font-size: 12.5px; }
+.gcaution b { color: var(--warn); }
+.gdir { font-size: 10.5px; font-weight: 400; color: var(--fg-faint); }
+.gdir.higher { color: var(--ok); }
+.gdir.lower { color: var(--warn); }
+/* The footnote back-link. Always present so entries do not shift when one is targeted. */
+.gback {
+  margin-left: auto; color: var(--fg-faint) !important; text-decoration: none;
+  font-size: 13px; opacity: 0; transition: opacity .12s;
+}
+.gentry:hover .gback, .gback:focus-visible { opacity: 1; }
+/* `.here`, not `:target`. The real fragment is the part after the second `#`, so no element
+ * ever matches `:target` under this router and the highlight never appeared. */
+.gentry.here { background: var(--ok-bg); border-radius: var(--r-sm); padding-left: 9px; }
+.gentry.here .gback { opacity: 1; }

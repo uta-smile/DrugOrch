@@ -1,0 +1,79 @@
+/* The routing trace. Every colour is a token so the SVG retheme costs one attribute flip. */
+
+.trace-wrap { position: relative; }
+.trace-svg { display: block; width: 100%; height: auto; user-select: none; }
+
+.trace-lane-bg { fill: var(--trace-lane); }
+.trace-grid-line { stroke: var(--trace-grid); stroke-width: 1; }
+.trace-axis-text { fill: var(--fg-faint); font-size: 9.5px; font-family: var(--mono); }
+.trace-lane-label {
+  fill: var(--fg-muted); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* a chosen invocation */
+.trace-block { cursor: pointer; }
+.trace-block rect.blk { stroke: none; }
+.trace-block.sel rect.blk { stroke: var(--fg); stroke-width: 2; }
+.trace-block rect.blkfill { opacity: 0.45; }
+.trace-block.failed rect.blk { fill: var(--err) !important; }
+.trace-block text { font-family: var(--mono); font-size: 9px; fill: var(--accent-fg); }
+
+/* in flight */
+@keyframes trace-pulse { 0%,100% { opacity: 0.45; } 50% { opacity: 0.9; } }
+.trace-block.running rect.blk { animation: trace-pulse 1.4s ease-in-out infinite; }
+
+/* a rejected alternative */
+.trace-ghost rect {
+  fill: none; stroke: var(--sub-rejected);
+  stroke-width: 1.2; stroke-dasharray: 3 2.5; opacity: 0.85;
+}
+.trace-ghost text { fill: var(--sub-rejected); font-size: 8.5px; font-family: var(--mono); }
+.trace-ghost { cursor: pointer; }
+
+/* decision ticks */
+.trace-tick line { stroke: var(--border-strong); stroke-width: 1; stroke-dasharray: 2 2; }
+.trace-tick polygon { fill: var(--fg-muted); cursor: pointer; }
+.trace-tick.sel polygon { fill: var(--accent); }
+.trace-tick.blocked polygon { fill: var(--warn); }
+.trace-tick text { fill: var(--fg-faint); font-size: 9px; font-family: var(--mono); }
+
+/* data dependency */
+.trace-edge { fill: none; stroke: var(--edge); stroke-width: 1.2; opacity: 0.55; }
+
+.trace-legend {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  padding: 7px 14px; font-size: 11px; color: var(--fg-muted);
+  border-top: 1px solid var(--border);
+}
+.trace-legend .item { display: flex; align-items: center; gap: 5px; }
+.trace-legend .swatch { width: 11px; height: 9px; border-radius: 2px; }
+.trace-legend .swatch.ghost {
+  background: transparent; border: 1.2px dashed var(--sub-rejected);
+}
+
+/* --- decision inspector --------------------------------------------------- */
+.inspector .hdr { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; }
+.inspector .hdr .step { font-family: var(--mono); font-weight: 650; }
+.inspector .why {
+  margin: 9px 0 0; padding: 10px 12px;
+  background: var(--bg-sunken); border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0; line-height: 1.55;
+}
+.inspector .gain { margin-top: 7px; font-size: 12.5px; color: var(--fg-muted); }
+
+.alts { width: 100%; border-collapse: collapse; margin-top: 11px; font-size: 12.5px; }
+.alts th {
+  text-align: left; padding: 4px 8px; font-size: 10px; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--fg-muted); border-bottom: 1px solid var(--border);
+  font-weight: 600;
+}
+.alts td { padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.alts tr:last-child td { border-bottom: 0; }
+.alts .mark { width: 18px; }
+.alts .chosen td { background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.alts .score { font-family: var(--mono); text-align: right; width: 54px; }
+.alts .sname { font-weight: 600; white-space: nowrap; }
+
+.io { margin-top: 11px; font-size: 12px; }
+.io .k { color: var(--fg-muted); margin-right: 6px; }
