@@ -1,14 +1,4 @@
-/* Run setup: four numbered steps, in the order a run actually needs them.
- *
- * The earlier version explained itself at length — a paragraph on why the policy choice is
- * yours, another on provider trade-offs, a hint under every field. All of it true, none of
- * it readable: a wall of prose is skipped, so the warnings that mattered were skipped too.
- *
- * So the page states, and details wait behind a click. "You pick this" is a line, not a
- * paragraph. A policy's reasoning lives in its card. A provider's caveat lives in its panel.
- * What stays on screen is the state you need to see at a glance — ready or not, chosen or
- * not — carried by colour and position rather than by sentences.
- */
+/* Run setup presents the required choices in workflow order. */
 
 import { useEffect, useState } from 'preact/hooks';
 import { html } from '@/h.js';
@@ -111,8 +101,8 @@ export function SetupView({ manifest, keyStatus, onKeyChange, onStarted }) {
               placeholder="e.g. find potent, selective inhibitors with good oral bioavailability"
             ></textarea>
             <p class="note">
-              A goal states what would count as success. It only affects a run under the
-              <b>llm</b> policy, which is the policy that reads it.
+              A goal guides routing only under the <b>llm</b> policy. Other policies record it
+              as a label.
               ${' '}
               ${/* Parks the current text before leaving. Navigating remounts this view, so a
                    goal someone had typed would otherwise be thrown away by the trip to a page
@@ -126,7 +116,7 @@ export function SetupView({ manifest, keyStatus, onKeyChange, onStarted }) {
                     /* private mode: the trip still works, the draft just does not survive it */
                   }
                 }}
-                >What kinds of goal drug discovery has →</a
+                >Goal examples and limitations →</a
               >
             </p>
           `,
@@ -157,7 +147,6 @@ export function SetupView({ manifest, keyStatus, onKeyChange, onStarted }) {
         ${Step({
           n: 4,
           title: 'Routing policy',
-          aside: 'this choice is the experiment',
           done: true,
           children: html`
             <div class="pol-grid">
@@ -190,7 +179,7 @@ export function SetupView({ manifest, keyStatus, onKeyChange, onStarted }) {
               )}
             </div>
             ${blocked('llm') &&
-            html`<p class="note warn">llm needs a credential. Set one in step 5.</p>`}
+            html`<p class="note warn">The LLM policy requires a provider credential. Configure one in Model.</p>`}
             ${openCard && cards?.[openCard] &&
             html`<${PolicyCard} card=${cards[openCard]} open=${true}
                                 onToggle=${() => setOpenCard(null)} />`}
@@ -250,7 +239,7 @@ export function SetupView({ manifest, keyStatus, onKeyChange, onStarted }) {
         </div>
 
         ${error && html`<p class="note err">${error}</p>`}
-        ${!target && !error && html`<p class="note">Pick a target to start.</p>`}
+        ${!target && !error && html`<p class="note">Select a target to enable the run.</p>`}
       </form>
     </div>
   `;

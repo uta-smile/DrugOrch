@@ -108,7 +108,7 @@ export function LlmLogDrawer({ runId, nEvents, onClose }) {
     <aside class="drawer" role="dialog" aria-label="LLM log">
       <header>
         <b>LLM log</b>
-        <span class="small muted">what the planner was asked and what it answered</span>
+        <span class="small muted">Prompts, decisions, and model usage</span>
         <span class="spacer"></span>
         <span class="small faint nowrap">
           ${calls.length > 1 ? '↑ ↓ to step · Esc to close' : 'Esc to close'}

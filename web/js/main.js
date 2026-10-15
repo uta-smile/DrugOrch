@@ -78,7 +78,7 @@ function App() {
     <div class="app">
       <header class="topbar">
         <span class="brand">Drug<span>Orch</span></span>
-        <span class="small muted">LLM-orchestrated discovery with a visible routing trace</span>
+        <span class="small muted">Drug discovery runs with a live routing trace</span>
         <span class="spacer"></span>
         ${manifest?.llm &&
         html`<span class="keychip" title=${`${manifest.llm.provider}: ${manifest.llm.detail}`}>
@@ -149,7 +149,7 @@ function RunsView({ onOpen }) {
     <div class="card">
       <h3>Runs <span class="spacer"></span>
         <span class="small muted" style="font-weight:400;text-transform:none">
-          ${rows.length} total; same goal, different policies, traces comparable
+          ${rows.length} run${rows.length === 1 ? '' : 's'}
         </span>
       </h3>
       <div class="body flush">

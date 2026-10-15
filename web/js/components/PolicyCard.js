@@ -52,10 +52,10 @@ export function PolicyCard({ card, open, onToggle }) {
         ${Example({ example: card.example })}
 
         <dl class="kv" style="margin-top:12px">
-          <dt>stands for</dt><dd>${card.pattern}</dd>
-          <dt>in the literature</dt><dd>${card.reference}</dd>
-          <dt>reproducible</dt><dd>${card.determinism}</dd>
-          <dt>use it</dt><dd>${card.use_when}</dd>
+          <dt>comparison role</dt><dd>${card.pattern}</dd>
+          <dt>context</dt><dd>${card.reference}</dd>
+          <dt>reproducibility</dt><dd>${card.determinism}</dd>
+          <dt>when to use</dt><dd>${card.use_when}</dd>
         </dl>
 
         <div class="caveat"><b>Watch out:</b> ${card.caveat}</div>

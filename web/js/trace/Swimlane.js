@@ -25,7 +25,7 @@ export function Swimlane({ events, capabilities, selectedStep, onSelect, showGho
   const L = layout(events, capabilities);
   if (!L.lanes.length) {
     return html`<div class="empty">
-      No subsystem has been called yet. The trace appears as the run makes decisions.
+      No subsystem calls yet. The trace will update as the run proceeds.
     </div>`;
   }
 

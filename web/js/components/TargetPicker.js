@@ -219,7 +219,7 @@ export function TargetPicker({ value, onChange, onReadiness }) {
 
       ${open && query.trim() && !searching && rows.length === 0 &&
       html`<div class="ac-list"><div class="ac-empty">
-        No match. Try a gene (JAK2), accession (O60674) or PDB ID (7LL4).
+        No match. Try a gene name, UniProt accession, PDB ID, or ChEMBL ID.
       </div></div>`}
 
       ${(checking || ready) && html`<${ReadinessCard} ready=${ready} checking=${checking} />`}

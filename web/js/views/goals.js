@@ -1,22 +1,4 @@
-/* Goals in drug discovery, as a reference article.
- *
- * Laid out as a wiki page rather than as part of the application: a contents rail, numbered
- * sections, a measured reading column, everything expanded. The previous version hid each
- * goal type behind an accordion, which is the right shape for a control panel and the wrong
- * one for a document: collapsed cards cannot be skimmed, cannot be found by in-page search,
- * and cannot be linked to.
- *
- * Prose follows docs/STYLE.md -- definition first, declarative sentences, no em dashes, no
- * second person outside a numbered procedure. The earlier draft was written as an essay and
- * read as one, with the conclusion of each paragraph withheld until its last clause.
- *
- * Every quoted number is either a measurement from a public bank, computed here, or flagged
- * as a literature figure. Nothing comes from a run of this framework: a page about how to
- * judge results should not calibrate the reader against output from the tool whose results
- * they are learning to doubt. The ligand-efficiency figures come from measured ChEMBL
- * affinities because LE is defined on experimental free energy; computing it from a docking
- * score reproduces the size dependence the metric exists to remove.
- */
+/* Reference definitions, procedures, limitations, and examples for common discovery goals. */
 
 import { useEffect, useState } from 'preact/hooks';
 import { html } from '@/h.js';
@@ -841,15 +823,12 @@ export function GoalsView({ manifest, anchor, onUseGoal }) {
       <article class="wiki-body">
         <h1 class="wiki-title">Goals in drug discovery</h1>
         <p class="wiki-sub">
-          Reference for the goal field: what it controls, the kinds of goal a discovery
-          programme has, and how to evaluate a result against one.
+          Goal definitions, examples, available procedures, and limitations.
         </p>
 
         <p class="hatnote">
-          Only the <b>llm</b> routing policy reads the goal. The other five policies (fixed,
-          random, roundrobin, scripted and oracle) follow fixed rules and never receive this
-          text. On those runs the goal is a label on the record, which is what makes them
-          controls.
+          Only the <b>llm</b> policy uses the goal to choose tools and parameters. Other
+          policies record it as run metadata.
         </p>
 
         <${Heading} level="2" id="overview" n="1">Overview<//>
@@ -860,21 +839,9 @@ export function GoalsView({ manifest, anchor, onUseGoal }) {
           filter compounds are those a policy passes to a subsystem, and they appear in the
           trace.
         </p>
-        <p>
-          Section 2 describes eight recurring kinds of goal. Each entry gives a definition, the
-          reason the problem matters, how it is approached in practice, the procedure available
-          here, how to evaluate a result, and what this framework cannot do. Section 3 covers
-          the conversions needed to read the result panels. Section 4 explains why runs are
-          budgeted. Section 5 lists conventions for writing a goal.
-        </p>
 
         <${Heading} level="2" id="types" n="2">Kinds of goal<//>
-        <p>
-          Each entry carries a status box stating how far a budgeted run can pursue that goal.
-          The status is downgraded automatically when a required subsystem is disabled. Most of
-          these goals are only partly reachable here, and the limitations are listed with each
-          entry.
-        </p>
+        <p>Each status reflects the installed subsystems and the capabilities available in a run.</p>
 
         ${GOALS.map((g, i) => {
           const s = support(g, installed);
@@ -905,18 +872,18 @@ export function GoalsView({ manifest, anchor, onUseGoal }) {
 
               <p>${rich(g.definition)}</p>
 
-              <h4 class="wsub">Significance</h4>
+              <h4 class="wsub">Why it matters</h4>
               <p>${rich(g.significance)}</p>
 
               <h4 class="wsub">Methods</h4>
               <p>${rich(g.methods)}</p>
 
-              <h4 class="wsub">Procedure</h4>
+              <h4 class="wsub">In DrugOrch</h4>
               <ol class="wsteps">
                 ${g.here.map((step, j) => html`<li key=${j}>${step}</li>`)}
               </ol>
 
-              <h4 class="wsub">Evaluation</h4>
+              <h4 class="wsub">Reading results</h4>
               <dl class="judge">
                 <dt class="good">Indicator</dt>
                 <dd>${g.verdict.read}</dd>
@@ -931,7 +898,6 @@ export function GoalsView({ manifest, anchor, onUseGoal }) {
                 (ex) => html`
                   <div class="ex" key=${ex.text}>
                     <div class="ex-text">${ex.text}</div>
-                    <div class="ex-note small muted">${ex.note}</div>
                     <button type="button" class="btn ghost sm" onClick=${() => use(ex.text)}>
                       ${copied === ex.text ? 'sent to setup' : 'Use this goal'}
                     </button>

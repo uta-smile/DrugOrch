@@ -42,7 +42,7 @@ export function ToolPicker({ subsystems, enabled, onChange }) {
                 ${s.unit_cost}u / ${s.per} · ~${Math.round(s.typical_wall_s)}s
               </span>
               <span class="spacer"></span>
-              <button type="button" class="q" title="What does this tool do, and what can it be asked for?"
+              <button type="button" class="q" title="Tool description and parameters"
                       onClick=${(e) => { e.preventDefault(); setOpen(isOpen ? null : s.key); }}>
                 ${isOpen ? '−' : '?'}
               </button>

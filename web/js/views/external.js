@@ -67,9 +67,8 @@ export function ExternalBoard() {
         <div>
           <h2>MolDesignBench</h2>
           <p class="muted small">
-            2,000 scenario-grounded design instances with explicit and implied constraints.
-            ${' '}Answers here are scored by the benchmark's own evaluator, in the
-            environment its answer key was built in.
+            2,000 molecular design instances with explicit and implied constraints. Results
+            use MolDesignBench's evaluator and scoring environment.
           </p>
         </div>
         <span class="spacer"></span>
@@ -104,8 +103,8 @@ export function ExternalBoard() {
 
       ${!data.available &&
       html`<div class="note warn" style="margin:12px 0">
-        <b>No run has been scored here yet.</b> The published rows below are the paper's.
-        ${' '}Measuring our own row is a command, because it spends model calls:
+        <b>No local results yet.</b> Published results are shown below. To run the benchmark
+        locally, use this command (it makes model calls):
         <pre class="mono tiny scroller" style="margin-top:8px">${data.hint ||
           'drugorch extbench --n 200'}</pre>
       </div>`}
@@ -162,27 +161,26 @@ export function ExternalBoard() {
               not interpretable without them: seventeen tools against four is most of what
               separates these rows. */ ''}
         <div class="note">
-          <b>The two sides are not equipped alike.</b> The benchmark gives its models 17
-          ${' '}tools; DrugOrch answers with 4 subsystems.
-          ${' '}<a href="#/tools">What each side has, and what each tool does</a>.
+          The arms have different tool access.
+          ${' '}<a href="#/tools">Compare the tools and subsystems</a>.
         </div>
         <div class="note">
-          <b>Highlighted rows were measured here.</b> The rest are
+          <b>Measured here:</b> highlighted rows. Other rows are from
           ${' '}${src.paper ? `${src.paper}, ${src.table}, ${src.venue}` : 'published figures'},
-          ${' '}${src.n_per_task || 1000} instances per task. They were not re-run.
+          ${' '}${src.n_per_task || 1000} instances per task.
         </div>
         ${data.available &&
         html`<div class="note">
-          <b>The sample is stated rather than assumed.</b> ${sample.n} instances at
-          ${' '}fingerprint <span class="mono">${sample.fingerprint}</span>:
+          <b>Local sample:</b> ${sample.n} instances, fingerprint
+          <span class="mono">${sample.fingerprint}</span>:
           ${' '}${sample.by_task?.generation} generation, ${sample.by_task?.optimization}
           ${' '}optimization, ${sample.infeasible} of them contradictory by construction,
           ${' '}${sample.mean_constraints} constraints each on average.
         </div>`}
         ${data.available &&
         html`<div class="note">
-          <b>Measurement is the benchmark's.</b> Properties come from its own analyzer and
-          ${' '}functional groups from its own counter, both run in
+          Properties come from the benchmark analyzer; functional groups come from its
+          counter. Both ran in
           ${' '}<span class="mono">${data.provenance?.measured_in}</span>. Scoring runs
           ${' '}<span class="mono">${data.provenance?.scored_by}</span>.
         </div>`}
@@ -337,10 +335,10 @@ function Decomposition({ data }) {
   const pct = (x) => `${(x * 100).toFixed(0)}%`;
   return html`<div class="card" style="margin-top:18px">
     <h3>
-      Where the score goes
+      Score breakdown
       <span class="spacer"></span>
       <span class="small muted" style="font-weight:400;text-transform:none">
-        reading the question, against solving what was read
+        specification extraction and solution rate
       </span>
     </h3>
     <div class="body">
@@ -408,12 +406,11 @@ function PairedGain({ data, task }) {
   const verdict = !decisive
     ? 'The two are not distinguishable at this sample size.'
     : better
-      ? 'The orchestration accounts for the difference, not the model underneath it.'
-      : 'The no-tool control is ahead here, and the orchestration is not paying for itself.';
+      ? 'The orchestrated arm scored higher than the no-tool control on this sample.'
+      : 'The no-tool control scored higher on this sample.';
 
   return html`<div class=${'note paired ' + (decisive ? (better ? 'ok' : 'warn') : '')}>
-    <b>Orchestrated against the same model with no tools, paired on
-    ${' '}${g.n_paired} instances.</b>
+    <b>Paired comparison with the same model, with and without tools (${g.n_paired} instances).</b>
     ${' '}The orchestrated arm solved <b>${g.arm_only}</b> that the control did not; the
     ${' '}control solved <b>${g.baseline_only}</b> that it did not.
     ${' '}Both solved ${g.both}; neither solved ${g.neither}.
@@ -446,10 +443,10 @@ function ArmDetail({ data }) {
   if (!arms.length) return null;
   return html`<div class="card" style="margin-top:18px">
     <h3>
-      What each arm did
+      Arm details
       <span class="spacer"></span>
       <span class="small muted" style="font-weight:400;text-transform:none">
-        the work behind the score, not the score
+        calls, time, and subsystems by arm
       </span>
     </h3>
     <div class="body flush">

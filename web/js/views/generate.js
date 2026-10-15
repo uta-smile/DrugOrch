@@ -62,8 +62,8 @@ export function GenerateView() {
         <div>
           <h2>Workbench</h2>
           <p class="small muted">
-            Direct operations on compounds. No budget, no routing policy, and nothing is
-            recorded as a run.
+            Build conformers, generate analogues, or dock SMILES against a protein pocket.
+            Workbench operations are not saved as runs.
           </p>
         </div>
         <span class="spacer"></span>
@@ -138,10 +138,8 @@ function BuildPanel({ basket }) {
           </div>
           ${err && html`<p class="note err">${err}</p>`}
           <p class="small muted" style="margin-top:10px">
-            ETKDGv3 distance geometry with crystal-derived torsion preferences, then an
-            MMFF94 relaxation. No model and no training set are involved, so unlike a generated
-            structure this cannot be confidently wrong. The seed is derived from the
-            compound, so the same input always gives the same coordinates.
+            Conformers use ETKDGv3 distance geometry and crystal-derived torsion preferences,
+            then MMFF94 relaxation. Coordinates are deterministic for each input molecule.
           </p>
         </div>
       </form>
@@ -259,10 +257,8 @@ function ElaboratePanel({ onBasket, onDock }) {
           </div>
           ${err && html`<p class="note err">${err}</p>`}
           <p class="small muted" style="margin-top:10px">
-            The same GraphGA operators the generation subsystem uses, called directly: cut
-            two parents at acyclic single bonds and recombine (crossover), or apply one
-            single-atom perturbation (mutation). With one seed every child is a mutation, since
-            crossover requires two distinct parents. Deterministic under the seed.
+            GraphGA creates analogues by crossover between two seeds or by single-atom
+            mutation. One seed enables mutation only. The random seed makes runs reproducible.
           </p>
         </div>
       </form>
@@ -444,9 +440,8 @@ function FitPanel({ basket, onBasket }) {
           </div>`}
           ${err && html`<p class="note err">${err}</p>`}
           <p class="small muted" style="margin-top:10px">
-            The bound ligand marks where the site is. A structure solved without one gives
-            nothing to aim at, which is why an apo entry is refused rather than docked into
-            the middle of the protein.
+            Pocket preparation uses a ligand-bound structure to locate the binding site.
+            Structures without a bound ligand cannot define the docking box.
           </p>
         </div>
       </form>
@@ -513,8 +508,7 @@ function FitPanel({ basket, onBasket }) {
                 </tbody>
               </table>
               <p class="small muted" style="padding:8px 10px 0">
-                Vina affinity, where more negative is better. It is a scoring function, not a
-                measurement. Use it to rank, not as a predicted binding energy.
+                Vina scores rank poses; they are not measured binding affinities.
               </p>
             </div>
           </div>

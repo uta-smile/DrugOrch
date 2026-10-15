@@ -1,29 +1,4 @@
-/* The leaderboard, in two halves, because two different questions are being asked.
- *
- * **Public benchmark** is the first one on screen. It places DrugOrch on MolDesignBench
- * against the numbers that benchmark's authors published, scored by their evaluator. It is
- * the question a reader outside this project has: not "does the orchestrator beat the
- * baselines its own author wrote" but "how does this system do on a problem somebody else
- * defined, measured the way they measure it".
- *
- * **Routing arms** is the internal question, and it is the one that explains the first. It
- * compares policies against each other on this project's own benchmark, paired by target and
- * seed, which is what says whether routing is doing the work.
- *
- * The public board leads because it is the claim that needs no trust in this repository.
- *
- * --- the routing board below ----------------------------------------------------------
- *
- * Three things are on screen together because any one alone misleads. The **aggregate** says
- * which arm is ahead. The **win rate against the baseline** says whether it is ahead
- * consistently or because of one lucky target. The **per-target grid** shows the case the
- * whole benchmark exists to catch — an arm that averages well because it is excellent on
- * kinases and useless on everything else.
- *
- * Flags are rendered inline rather than in a footnote. A row with six fallback decisions is
- * not a result for that arm, and the oracle is a ceiling rather than a method; both are the
- * kind of caveat that gets lost the moment it is one click away.
- */
+/* Public benchmark results and within-project routing comparisons. */
 
 import { useEffect, useState } from 'preact/hooks';
 import { html } from '@/h.js';
@@ -77,8 +52,8 @@ function RoutingBoard() {
       <div class="empty" style="text-align:left;line-height:1.7">
         <b>No benchmark has been run yet.</b><br />
         <span class="muted">
-          A grid runs every arm against every target at every seed, each against the same
-          withheld scaffolds. It spends real compute, so it is a command rather than a button:
+          Run the grid from the command line. Each arm uses the same withheld scaffolds for a
+          given target and seed.
         </span>
         <pre class="mono tiny scroller" style="margin-top:10px">drugorch bench --targets O60674,P24941 --policies fixed,scripted,llm --seeds 1,2</pre>
       </div>
@@ -172,9 +147,6 @@ function RoutingBoard() {
       html`<div class="card" style="margin-top:18px">
         <h3>Per target
           <span class="spacer"></span>
-          <span class="small muted" style="font-weight:400;text-transform:none">
-            an aggregate hides an arm that wins on one problem class and loses on the rest
-          </span>
         </h3>
         <div class="body flush">
           <table class="board">

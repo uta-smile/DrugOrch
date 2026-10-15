@@ -20,7 +20,7 @@ import { CallDetail } from '@/components/CallDetail.js';
 export function Inspector({ tick, block, capabilities, runId }) {
   if (!tick) {
     return html`<div class="empty">
-      Select a decision in the trace above to see why it was made.
+      Select a decision in the trace to view its inputs and rationale.
     </div>`;
   }
 
@@ -44,7 +44,7 @@ export function Inspector({ tick, block, capabilities, runId }) {
         <span class="pill">${tick.policy || 'policy'}</span>
         ${tick.source === 'llm' && html`<span class="pill running">llm</span>`}
         ${tick.source === 'fallback' &&
-        html`<span class="pill failed" title="the policy under test failed; a fallback decided">
+        html`<span class="pill failed" title="The selected policy failed; the scripted policy made this decision.">
           fallback
         </span>`}
         ${tick.blocked &&

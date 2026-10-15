@@ -48,9 +48,9 @@ export function ToolsView() {
         <div>
           <h2>Toolsets</h2>
           <p class="muted small">
-            The benchmark gives its models ${data.n_benchmark} tools. DrugOrch answers the
-            ${' '}same instances with ${data.n_drugorch} subsystems. Both are listed below
-            ${' '}with what each one does.
+            MolDesignBench provides ${data.n_benchmark} tools; DrugOrch uses
+            ${' '}${data.n_drugorch} subsystems on the same instances. Expand an item for its
+            description and parameters.
           </p>
         </div>
         <span class="spacer"></span>
@@ -62,10 +62,8 @@ export function ToolsView() {
       </div>
 
       <div class="note" style="margin-bottom:16px">
-        <b>A tool count is not a capability comparison.</b> Four of theirs convert between
-        ${' '}naming schemes, which the instances here do not require; one is a general Python
-        ${' '}shell, which subsumes most of the rest. The capabilities with nothing standing in
-        ${' '}for them on our side are listed at the foot of this page.
+        MolDesignBench includes name converters and a Python shell. Capabilities without a
+        DrugOrch counterpart are listed below.
       </div>
 
       ${groups.map(
@@ -77,26 +75,24 @@ export function ToolsView() {
               ${(ours[g] || []).map((t) => html`<${Tool} key=${t.name} t=${t}
                                                         open=${open} setOpen=${setOpen} />`)}
               ${!(ours[g] || []).length &&
-              html`<div class="tool-none">Nothing on this side.</div>`}
+              html`<div class="tool-none">No tool in this category.</div>`}
             </div>
             <div>
               <div class="side-head">MolDesignBench</div>
               ${(theirs[g] || []).map((t) => html`<${Tool} key=${t.name} t=${t}
                                                            open=${open} setOpen=${setOpen} />`)}
               ${!(theirs[g] || []).length &&
-              html`<div class="tool-none">Nothing on this side.</div>`}
+              html`<div class="tool-none">No tool in this category.</div>`}
             </div>
           </div>
         </section>`,
       )}
 
       <section class="tool-group">
-        <h3>Capabilities only the benchmark's models have</h3>
+        <h3>Benchmark capabilities without a DrugOrch counterpart</h3>
         <p class="muted small" style="margin:0 0 10px">
-          ${data.uncovered?.length} of their ${data.n_benchmark} tools have no counterpart
-          ${' '}here. The neural generators and the Python shell are the ones that bear on a
-          ${' '}score; the naming converters matter only for instances that state a compound by
-          ${' '}name, which these do not.
+          ${data.uncovered?.length} of ${data.n_benchmark} benchmark tools have no counterpart
+          ${' '}in DrugOrch. These tools affect what each model can do on a task.
         </p>
         <ul class="gap-list">
           ${(data.uncovered || []).map(

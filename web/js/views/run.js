@@ -248,7 +248,7 @@ function BudgetPanel({ run }) {
     <div class="card">
       <h3>Where the budget went</h3>
       <div class="body">
-        ${entries.length === 0 && html`<div class="muted small">nothing spent yet</div>`}
+        ${entries.length === 0 && html`<div class="muted small">No subsystem calls yet.</div>`}
         ${entries.map(
           ([k, v]) => html`
             <div key=${k} style="margin-bottom:7px">
@@ -276,7 +276,7 @@ function Leaderboard({ run }) {
       </h3>
       <div class="body flush">
         ${best.length === 0 &&
-        html`<div class="empty">Nothing scored yet. Molecules appear here once a scoring subsystem has run.</div>`}
+        html`<div class="empty">No scored molecules yet. Results appear after a scoring call.</div>`}
         ${best.slice(0, 8).map(
           (m, i) => html`
             <div class="mol" key=${'m' + i}>

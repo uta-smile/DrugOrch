@@ -24,11 +24,11 @@ import { getSelectionCurve } from '@/api.js';
  * default; 0 is the control, and it is first in the list because being able to watch the
  * whole argument collapse is the point of making this adjustable at all. */
 const NOISE_STEPS = [
-  { v: 0, label: '0', hint: 'a perfect oracle; the control' },
-  { v: 0.5, label: '0.5', hint: 'far better than any docking score' },
-  { v: 1, label: '1', hint: 'optimistic' },
-  { v: 2, label: '2', hint: "approximately Vina's published error" },
-  { v: 3, label: '3', hint: 'a poor scoring function' },
+  { v: 0, label: '0', hint: 'No scoring error' },
+  { v: 0.5, label: '0.5', hint: 'Low scoring error' },
+  { v: 1, label: '1', hint: 'Moderate scoring error' },
+  { v: 2, label: '2', hint: "Approximately AutoDock Vina's published error" },
+  { v: 3, label: '3', hint: 'High scoring error' },
 ];
 
 const W = 660;
@@ -48,13 +48,13 @@ const SERIES = [
     key: 'true_of_pick',
     cls: 'truth',
     name: 'true value of the pick',
-    note: 'what that compound is worth',
+    note: 'measured value of the selected compound',
   },
   {
     key: 'best_true_available',
     cls: 'ceiling',
     name: 'best compound in the pool',
-    note: 'the ceiling available',
+    note: 'best compound available in the pool',
   },
 ];
 
@@ -199,7 +199,7 @@ export function SelectionFigure() {
         ? html`<p class="note ok">
             With a perfect oracle the three series coincide. The best compound by measured
             score is always the best compound present, regret is zero at every pool size, and
-            no budget is needed. Every reason to cap a run requires σ greater than zero.
+            At σ = 0, increasing the pool size does not introduce selection error.
           </p>`
         : html`<p class="selfig-read">
             ${/* htm drops the whitespace between a text node and an element that follows it

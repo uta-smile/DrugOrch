@@ -185,11 +185,8 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
     PolicyCard(
         name="fixed",
         title="Fixed pipeline",
-        one_line="Runs the stages in a hard-coded order and ignores the run state entirely.",
-        role=(
-            "You are measuring the null. Picking this says you want the number a system "
-            "with no routing would get, on this goal, at this budget."
-        ),
+        one_line="Runs each stage in a fixed order without using run results to choose.",
+        role="Baseline for a pipeline that does not adapt its routing to run results.",
         rule=(
             "Walk a fixed list -- retrieval, properties, docking, generation -- then cycle "
             "the last three until the budget runs out. The same order every time, whatever "
@@ -198,27 +195,17 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         reads=("step",),
         emits=("subsystem", "params"),
         pattern="Hard-coded discovery pipeline",
-        reference=(
-            "The shape of most published end-to-end LLM drug-discovery systems: full stage "
-            "coverage, fixed stage order. This is the baseline the adaptive-routing claim "
-            "is made against."
-        ),
+        reference="Fixed-order baseline with full stage coverage.",
         determinism="Fully deterministic. Identical for every seed and every target.",
         calls_api=False,
-        use_when="Always run it. It is the number every other arm has to beat.",
-        caveat=(
-            "It cannot react to anything -- a dead subsystem, an exhausted budget, a run "
-            "that stopped improving. Beating it is necessary, not impressive."
-        ),
+        use_when="Include it as a baseline in policy comparisons.",
+        caveat="Does not adapt to unavailable tools or changes in run state.",
     ),
     PolicyCard(
         name="random",
         title="Random choice",
         one_line="Picks uniformly among the subsystems it can currently afford.",
-        role=(
-            "You are testing whether *any* variation in order helps. If the adaptive arm "
-            "only matches this, its gain came from varying the order, not from reasoning."
-        ),
+        role="Control for routing with no information about run progress.",
         rule="Sample uniformly from the affordable, available subsystems. Seeded.",
         reads=("budget.remaining", "unavailable"),
         emits=("subsystem",),
@@ -226,17 +213,14 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         reference="Standard ablation control; no published system proposes this.",
         determinism="Deterministic given the seed; differs across seeds by design.",
         calls_api=False,
-        use_when="Run it across several seeds and report the spread, not one draw.",
-        caveat="A single seed of a random arm is an anecdote. Use at least five.",
+        use_when="Compare across multiple seeds to account for random variation.",
+        caveat="A single seed does not show variation across random choices.",
     ),
     PolicyCard(
         name="roundrobin",
         title="Round robin",
         one_line="Rotates through the available subsystems in a fixed cycle.",
-        role=(
-            "You are separating 'varying the order helps' from 'varying it *unpredictably* "
-            "helps'. It is the structured counterpart to the random arm."
-        ),
+        role="Control for a fixed rotation through available subsystems.",
         rule="Advance to the next affordable subsystem in a fixed rotation each step.",
         reads=("budget.remaining", "unavailable"),
         emits=("subsystem",),
@@ -244,7 +228,7 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         reference="Standard ablation control.",
         determinism="Fully deterministic.",
         calls_api=False,
-        use_when="Alongside random, to show a rotation alone does not explain a gain.",
+        use_when="Compare alongside random and adaptive policies.",
         caveat=(
             "Spends evenly across subsystems regardless of cost, so it burns budget on "
             "docking at the same rate as on the near-free property panel."
@@ -254,11 +238,7 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         name="scripted",
         title="Scripted rules",
         one_line="Hand-written rules reading exactly the state the LLM reads.",
-        role=(
-            "This is the control that decides whether the paper has a result. If the LLM "
-            "arm cannot beat competent hand rules over identical inputs, the finding is "
-            "that routing matters -- not that a language model is needed to do it."
-        ),
+        role="Compare model-based routing with deterministic rules using the same run state.",
         rule=(
             "Score every affordable subsystem on the current situation: resolve the target "
             "first, profile molecules before paying to dock them, dock what is unscored, "
@@ -279,27 +259,17 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         ),
         emits=("subsystem", "params", "rationale", "considered"),
         pattern="Expert heuristic routing",
-        reference=(
-            "Stands in for the hand-tuned stage logic inside pipeline systems, made "
-            "explicit and ablatable instead of buried in orchestration code."
-        ),
+        reference="Hand-written routing rules provide a deterministic policy baseline.",
         determinism="Fully deterministic.",
         calls_api=False,
-        use_when="Every comparison. This is the number that makes an LLM gain meaningful.",
-        caveat=(
-            "The rules were written by the same people reporting the result, so a weak "
-            "scripted arm is the easiest way to manufacture an LLM win. Read its trace "
-            "before trusting a gain over it."
-        ),
+        use_when="Include it when comparing the LLM policy with rules-based routing.",
+        caveat="Inspect the trace to confirm the rules are making sensible decisions.",
     ),
     PolicyCard(
         name="oracle",
         title="Oracle (answer key)",
         one_line="Reads the known-actives answer key and routes toward it.",
-        role=(
-            "You are establishing a ceiling. It is not a method and must never be reported "
-            "as one -- it uses information no real campaign has."
-        ),
+        role="Upper-bound reference that uses known actives unavailable to a prospective campaign.",
         rule=(
             "Consult the retrieved ChEMBL actives and their measured potencies, then route "
             "to confirm what the answer key already indicates."
@@ -310,10 +280,7 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         reference="Standard upper-bound control in retrospective benchmarks.",
         determinism="Fully deterministic given the retrieved actives.",
         calls_api=False,
-        use_when=(
-            "To normalize a gain: report the adaptive arm's progress as a fraction of the "
-            "distance from the fixed baseline to this ceiling."
-        ),
+        use_when="Use as an upper bound when interpreting retrospective benchmark results.",
         caveat=(
             "Leaks the evaluation target into the method. Any number from this arm is "
             "meaningless as a performance claim."
@@ -323,10 +290,7 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
         name="llm",
         title="LLM planner (Claude)",
         one_line="Claude reads the state summary and the capability manifest and chooses.",
-        role=(
-            "This is the arm under test. Picking it says you are measuring whether a "
-            "language model routes a discovery campaign better than rules do."
-        ),
+        role="Uses a language model to choose the next subsystem from the current run state.",
         rule=(
             "Send the system prompt, the capability manifest (cached, stable within a run) "
             "and the current state summary (volatile, last). The response is constrained to "
@@ -349,7 +313,7 @@ _CARD_DEFS: tuple[PolicyCard, ...] = (
             "its decision sequence exactly, and offline mode makes a miss an error."
         ),
         calls_api=True,
-        use_when="Paired against scripted on the same goal, seed and budget. Never alone.",
+        use_when="Compare with scripted routing using the same goal, seed, and budget.",
         caveat=(
             "Costs money and wall time per decision, and a silent fallback looks like a "
             "normal run. Check the LLM log for source=fallback before reporting a result."

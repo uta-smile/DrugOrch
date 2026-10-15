@@ -155,7 +155,7 @@ export function ProviderPanel({ keyStatus, onKeyChange, llm, onProviderChange })
 
       ${provider !== 'anthropic' &&
       html`<p class="note warn">
-        Different provider = different experiment. Recorded per run; don't pool results.
+        Provider is recorded per run. Do not combine results from different providers.
       </p>`}
       ${note && html`<p class="note ok">${note}</p>`}
       ${err && html`<p class="note err">${err}</p>`}
